@@ -729,3 +729,27 @@ set pastetoggle=<F4>
 set invlist
 nnoremap <leader>tt :set invlist<cr>
 let g:easytags_async = 1
+"
+"auto add pyhton header --start
+autocmd BufNewFile *.py 0r ~/.vim/vim_template/vim_pyhton_header
+autocmd BufNewFile *.py ks|call FileName()|'s
+autocmd BufNewFile *.py ks|call CreatedTime()|'s
+fun FileName()
+	if line("$") > 10
+		let l = 10  "这里是字母L 不是数字1 
+	else
+		let l = line("$")
+	endif 
+	exe "1," . l . "g/File Name:.*/s/File Name:.*/File Name: " .expand("%")  
+       "最前面是数字1，这里的File Name: 要和模板中一致
+endfun 
+fun CreatedTime()
+	if line("$") > 10
+		let l = 10
+	else
+		let l = line("$")
+	endif 
+	exe "1," . l . "g/Created Time:.*/s/Created Time:.*/Created Time: " .strftime("%Y-%m-%d %T") 
+        "这里Create Time: 要和模板中一致
+endfun 
+"auto add python header --end
