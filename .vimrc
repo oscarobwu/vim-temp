@@ -770,7 +770,7 @@ function AddTitlePython()
     call append(11, "# REQUIREMENTS: ---")
     call append(12, "#         BUGS: ---")
     call append(13, "#        NOTES: ---")
-    call append(14, "#       AUTHOR: YOUR NAME (), ")
+    call append(14, "#       AUTHOR: Oscarob Wu(oscarobwu@gmail.com), ")
     call append(15, "# ORGANIZATION: ")
     call append(16, "#      VERSION: 1.0")
     call append(17, "#      Created Time:  ")
@@ -780,17 +780,29 @@ function AddTitlePython()
 endf
 function AddTitleSH()
     call setline(1, "#!/bin/sh")
-    call append(1,"# ")
-    call append(2,"# Author:         Oscarob Wu <oscarobwu@gmail.com>")
-    call append(3,"# Filename:       " . expand("%"))
-    call append(4,"# Created Time:  ")
-    call append(5,"# Last modified:  ")
-    call append(6,"# ")
-    call append(7,"# Description:")
-    call append(8,"# ")
+    call append(1, "#-*- coding: utf-8 -*-")
+    call append(2, "#===============================================================================")
+    call append(3, "#")
+    call append(4, "#         Filename:       " . expand("%"))
+    call append(5, "#")
+    call append(6, "#        USAGE: " . expand("%"))
+    call append(7, "#")
+    call append(8, "#  DESCRIPTION: ")
+    call append(9, "#")
+    call append(10, "#      OPTIONS: ---")
+    call append(11, "# REQUIREMENTS: ---")
+    call append(12, "#         BUGS: ---")
+    call append(13, "#        NOTES: ---")
+    call append(14, "#       AUTHOR: Oscarob Wu(oscarobwu@gmail.com), ")
+    call append(15, "# ORGANIZATION: ")
+    call append(16, "#      VERSION: 1.0")
+    call append(17, "#      Created Time:  ")
+    call append(18, "#      Last modified:  ")
+    call append(19, "#     REVISION: ---")
+    call append(20, "#===============================================================================")
 endf
 fun UpdateDate()
-      if line("$") > 10
+      if line("$") > 1
               let l = 20
       else
               let l = line("$")
@@ -799,7 +811,7 @@ exe "1," . 20 . "g/Last modified:.*/s/Last modified:.*/Last modified: " .strftim
     "
 endfun
 fun CreatedTime()
-      if line("$") > 10
+      if line("$") > 1
               let l = 20
       else
               let l = line("$")
@@ -807,9 +819,10 @@ fun CreatedTime()
 exe "1," . 20 . "g/Created Time:.*/s/Created Time:.*/Created Time: " .strftime("%Y-%m-%d %T")
         "这里Create Time: 要和模板中一致
 endfun
+"
 autocmd bufnewfile *.py call AddTitlePython()
 autocmd bufNewFile *.py ks|call CreatedTime()|'s
-autocmd bufwritepre *.py ks|call UpdateDate()|'s'
+autocmd bufwritepre *.py ks|call UpdateDate()|'s
 autocmd bufnewfile *.sh call AddTitleSH()
 autocmd bufNewFile *.sh ks|call CreatedTime()|'s
-autocmd bufwritepre *.sh call UpdateDate()
+autocmd bufwritepre *.sh ks|call UpdateDate()|'s
