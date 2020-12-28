@@ -10,7 +10,7 @@ endif
 let vimplug_exists=expand('~/.vim/autoload/plug.vim')
 
 let g:vim_bootstrap_langs = "c,javascript,html,python"
-let g:vim_bootstrap_editor = "vim"				" nvim or vim
+let g:vim_bootstrap_editor = "vim"                              " nvim or vim
 
 if !filereadable(vimplug_exists)
   echo "Installing Vim-Plug..."
@@ -41,7 +41,7 @@ Plug 'bronson/vim-trailing-whitespace'
 Plug 'Raimondi/delimitMate'
 Plug 'majutsushi/tagbar'
 Plug 'xolox/vim-easytags'
-" Plug 'Valloric/YouCompleteMe' 
+" Plug 'Valloric/YouCompleteMe'
 " Plug 'scrooloose/syntastic'
 Plug 'w0rp/ale'
 Plug 'Yggdroot/indentLine'
@@ -217,7 +217,7 @@ else
   " let g:indentLine_bgcolor_term = 202
   " let g:indentLine_bgcolor_gui = '#FF5F00'
 
-  
+
   if $COLORTERM == 'gnome-terminal'
     set term=gnome-256color
   else
@@ -225,7 +225,7 @@ else
       set term=xterm-256color
     endif
   endif
-  
+
 endif
 
 
@@ -235,7 +235,7 @@ endif
 
 
 highlight clear CursorLine to clear the current cusorline hl
-highlight CursorLine gui=underline cterm=underline 
+highlight CursorLine gui=underline cterm=underline
 highlight Visual cterm=bold ctermbg=Blue ctermfg=NONE
 
 
@@ -434,7 +434,7 @@ let g:UltiSnipsEditSplit="vertical"
 
 " Ale
 let g:ale_linters = {
-\	'python': ['flake8', 'pylint'],
+\       'python': ['flake8', 'pylint'],
 \   'javascript': ['eslint'],
 \   'typescript': ['tslint'],
 \   'html': ['tidy']
@@ -443,7 +443,7 @@ let g:airline#extensions#ale#enabled = 1
 let g:ale_echo_msg_format = '[%linter%] %...code...% >> %s [%severity%]'
 let g:ale_lint_delay = 500
 let g:ale_fixers = {
-\	'python': ['autopep8', 'yapf']
+\       'python': ['autopep8', 'yapf']
 \}
 " nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 " nmap <silent> <C-j> <Plug>(ale_next_wrap)
@@ -554,7 +554,7 @@ augroup END
 set autoindent noexpandtab tabstop=4 shiftwidth=4
 
 function! Generate_pdb()
-	call append(line('.') - 1, 'import ipdb; ipdb.set_trace()')
+        call append(line('.') - 1, 'import ipdb; ipdb.set_trace()')
 endfunction
 
 nmap <leader>pdb  :call Generate_pdb()<CR>
@@ -735,23 +735,23 @@ let g:easytags_async = 1
 "autocmd BufNewFile *.py ks|call FileName()|'s
 "autocmd BufNewFile *.py ks|call CreatedTime()|'s
 "fun FileName()
-""	if line("$") > 10
-"		let l = 10  "这里是字母L 不是数字1 
-""	else
-""		let l = line("$")
-""	endif 
-""	exe "1," . l . "g/File Name:.*/s/File Name:.*/File Name: " .expand("%")  
+""      if line("$") > 10
+"               let l = 10  "这里是字母L 不是数字1
+""      else
+""              let l = line("$")
+""      endif
+""      exe "1," . l . "g/File Name:.*/s/File Name:.*/File Name: " .expand("%")
 "       "最前面是数字1，这里的File Name: 要和模板中一致
-"endfun 
+"endfun
 "fun CreatedTime()
-""	if line("$") > 10
-""		let l = 10
-""	else
-""		let l = line("$")
-""	endif 
-"exe "1," . l . "g/Created Time:.*/s/Created Time:.*/Created Time: " .strftime("%Y-%m-%d %T") 
+""      if line("$") > 10
+""              let l = 10
+""      else
+""              let l = line("$")
+""      endif
+"exe "1," . l . "g/Created Time:.*/s/Created Time:.*/Created Time: " .strftime("%Y-%m-%d %T")
 "        "这里Create Time: 要和模板中一致
-"endfun 
+"endfun
 "auto add python header --end
 " python and shell script header.
 " python and shell script header.
