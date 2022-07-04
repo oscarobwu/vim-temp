@@ -1,881 +1,820 @@
-" vim-bootstrap 224c6cc
+" All system-wide defaults are set in $VIMRUNTIME/debian.vim and sourced by
+" the call to :runtime you can find below.  If you wish to change any of those
+" settings, you should do it in this file (/etc/vim/vimrc), since debian.vim
+" will be overwritten everytime an upgrade of the vim packages is performed.
+" It is recommended to make changes after sourcing debian.vim since it alters
+" the value of the 'compatible' option.
 
-"*****************************************************************************
-"" Vim-PLug core 主要以這個版本為修正設定 Debian
-"*****************************************************************************
-if has('vim_starting')
-  set nocompatible               " Be iMproved
+" This line should not be removed as it ensures that various options are
+" properly set to work with the Vim-related packages available in Debian.
+runtime! debian.vim
+
+" Uncomment the next line to make Vim more Vi-compatible
+" NOTE: debian.vim sets 'nocompatible'.  Setting 'compatible' changes numerous
+" options, so any other options should be set AFTER setting 'compatible'.
+"set compatible
+
+" Vim5 and later versions support syntax highlighting. Uncommenting the next
+" line enables syntax highlighting by default.
+if has("syntax")
+  syntax on
 endif
 
-let vimplug_exists=expand('~/.vim/autoload/plug.vim')
+" If using a dark background within the editing area and syntax highlighting
+" turn on this option as well
+set background=dark
 
-let g:vim_bootstrap_langs = "c,javascript,html,python"
-let g:vim_bootstrap_editor = "vim"                              " nvim or vim
-
-if !filereadable(vimplug_exists)
-  echo "Installing Vim-Plug..."
-  echo ""
-  silent !\curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  let g:not_finish_vimplug = "yes"
-
-  autocmd VimEnter * PlugInstall
+" Uncomment the following to have Vim jump to the last position when
+" reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
-" Required:
-call plug#begin(expand('~/.vim/plugged'))
+" Uncomment the following to have Vim load indentation rules and plugins
+" according to the detected filetype.
+if has("autocmd")
+  filetype plugin indent on
+endif
 
-"*****************************************************************************
-"" Plug install packages
-"*****************************************************************************
-Plug 'scrooloose/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-" Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-commentary'
-Plug 'vim-scripts/grep.vim'
-Plug 'vim-scripts/CSApprox'
-Plug 'bronson/vim-trailing-whitespace'
-Plug 'Raimondi/delimitMate'
-Plug 'majutsushi/tagbar'
-Plug 'xolox/vim-easytags'
-" Plug 'Valloric/YouCompleteMe'
-" Plug 'scrooloose/syntastic'
-Plug 'w0rp/ale'
-Plug 'Yggdroot/indentLine'
-Plug 'avelino/vim-bootstrap-updater'
-Plug 'sheerun/vim-polyglot'
-Plug 'ervandew/supertab'
-Plug 'pangloss/vim-javascript'
-Plug 'tpope/vim-surround'
-Plug 'elzr/vim-json'
-Plug 'ternjs/tern_for_vim'
+" The following are commented out as they cause vim to behave a lot
+" differently from regular Vi. They are highly recommended though.
+set showcmd             " Show (partial) command in status line.
+set showmatch           " Show matching brackets.
+set ignorecase          " Do case insensitive matching
+set smartcase           " Do smart case matching
+set incsearch           " Incremental search
+set autowrite           " Automatically save before commands like :next and :make
+set hidden              " Hide buffers when they are abandoned
+set mouse=a             " Enable mouse usage (all modes)
 
-if isdirectory('/usr/local/opt/fzf')
-  Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+" Source a global configuration file if available
+if filereadable("/etc/vim/vimrc.local")
+  source /etc/vim/vimrc.local
+endif
+
+
+
+
+
+
+
+
+" Insert or delete brackets, parens, quotes in pairs.
+" Maintainer:   JiangMiao <jiangfriend@gmail.com>
+" Contributor: camthompson
+" Last Change:  2013-07-13
+" Version: 1.3.2
+" Homepage: http://www.vim.org/scripts/script.php?script_id=3599
+" Repository: https://github.com/jiangmiao/auto-pairs
+" License: MIT
+
+if exists('g:AutoPairsLoaded') || &cp
+  finish
+end
+let g:AutoPairsLoaded = 1
+
+if !exists('g:AutoPairs')
+  let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
+end
+
+if !exists('g:AutoPairsParens')
+  let g:AutoPairsParens = {'(':')', '[':']', '{':'}'}
+end
+
+if !exists('g:AutoPairsMapBS')
+  let g:AutoPairsMapBS = 1
+end
+
+" Map <C-h> as the same BS
+if !exists('g:AutoPairsMapCh')
+  let g:AutoPairsMapCh = 1
+end
+
+if !exists('g:AutoPairsMapCR')
+  let g:AutoPairsMapCR = 1
+end
+
+if !exists('g:AutoPairsMapSpace')
+  let g:AutoPairsMapSpace = 1
+end
+
+if !exists('g:AutoPairsCenterLine')
+  let g:AutoPairsCenterLine = 1
+end
+
+if !exists('g:AutoPairsShortcutToggle')
+  let g:AutoPairsShortcutToggle = '<M-p>'
+end
+
+if !exists('g:AutoPairsShortcutFastWrap')
+  let g:AutoPairsShortcutFastWrap = '<M-e>'
+end
+
+if !exists('g:AutoPairsShortcutJump')
+  let g:AutoPairsShortcutJump = '<M-n>'
+endif
+
+" Fly mode will for closed pair to jump to closed pair instead of insert.
+" also support AutoPairsBackInsert to insert pairs where jumped.
+if !exists('g:AutoPairsFlyMode')
+  let g:AutoPairsFlyMode = 0
+endif
+
+" When skipping the closed pair, look at the current and
+" next line as well.
+if !exists('g:AutoPairsMultilineClose')
+  let g:AutoPairsMultilineClose = 1
+endif
+
+" Work with Fly Mode, insert pair where jumped
+if !exists('g:AutoPairsShortcutBackInsert')
+  let g:AutoPairsShortcutBackInsert = '<M-b>'
+endif
+
+if !exists('g:AutoPairsSmartQuotes')
+  let g:AutoPairsSmartQuotes = 1
+endif
+
+" 7.4.849 support <C-G>U to avoid breaking '.'
+" Issue talk: https://github.com/jiangmiao/auto-pairs/issues/3
+" Vim note: https://github.com/vim/vim/releases/tag/v7.4.849
+if v:version >= 704 && has("patch849")
+  let s:Go = "\<C-G>U"
 else
-  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-  Plug 'junegunn/fzf.vim'
-endif
-let g:make = 'gmake'
-if exists('make')
-        let g:make = 'make'
-endif
-Plug 'Shougo/vimproc.vim', {'do': g:make}
-
-"" Vim-Session
-Plug 'xolox/vim-misc'
-Plug 'xolox/vim-session'
-
-if v:version >= 703
-  Plug 'Shougo/vimshell.vim'
+  let s:Go = ""
 endif
 
+let s:Left = s:Go."\<LEFT>"
+let s:Right = s:Go."\<RIGHT>"
 
-Plug 'honza/vim-snippets'
+" Will auto generated {']' => '[', ..., '}' => '{'}in initialize.
+let g:AutoPairsClosedPairs = {}
 
-"" Color
-Plug 'tomasr/molokai'
+function! AutoPairsInsert(key)
+  if !b:autopairs_enabled
+    return a:key
+  end
 
+  let line = getline('.')
+  let pos = col('.') - 1
+  let before = strpart(line, 0, pos)
+  let after = strpart(line, pos)
+  let next_chars = split(after, '\zs')
+  let current_char = get(next_chars, 0, '')
+  let next_char = get(next_chars, 1, '')
+  let prev_chars = split(before, '\zs')
+  let prev_char = get(prev_chars, -1, '')
 
-"" Games
-Plug 'johngrib/vim-game-code-break'
-"*****************************************************************************
-"" Custom bundles
-"*****************************************************************************
+  let eol = 0
+  if col('$') -  col('.') <= 1
+    let eol = 1
+  end
 
-" c
-Plug 'vim-scripts/c.vim', {'for': ['c', 'cpp']}
-Plug 'ludwig/split-manpage.vim'
+  " Ignore auto close if prev character is \
+  if prev_char == '\'
+    return a:key
+  end
 
+  " The key is difference open-pair, then it means only for ) ] } by default
+  if !has_key(b:AutoPairs, a:key)
+    let b:autopairs_saved_pair = [a:key, getpos('.')]
 
-" javascript
-"" Javascript Bundle
-Plug 'jelera/vim-javascript-syntax'
+    " Skip the character if current character is the same as input
+    if current_char == a:key
+      return s:Right
+    end
 
+    if !g:AutoPairsFlyMode
+      " Skip the character if next character is space
+      if current_char == ' ' && next_char == a:key
+        return s:Right.s:Right
+      end
 
-" python
-"" Python Bundle
-Plug 'davidhalter/jedi-vim'
-Plug 'raimon49/requirements.txt.vim', {'for': 'requirements'}
-Plug 'plytophogy/vim-virtualenv'
-" Plug 'python-mode/python-mode'
+      " Skip the character if closed pair is next character
+      if current_char == ''
+        if g:AutoPairsMultilineClose
+          let next_lineno = line('.')+1
+          let next_line = getline(nextnonblank(next_lineno))
+          let next_char = matchstr(next_line, '\s*\zs.')
+        else
+          let next_char = matchstr(line, '\s*\zs.')
+        end
+        if next_char == a:key
+          return "\<ESC>e^a"
+        endif
+      endif
+    endif
 
-" html
-Plug 'hail2u/vim-css3-syntax'
-Plug 'gorodinskiy/vim-coloresque'
-Plug 'tpope/vim-haml'
-Plug 'mattn/emmet-vim'
+    " Fly Mode, and the key is closed-pairs, search closed-pair and jump
+    if g:AutoPairsFlyMode && has_key(b:AutoPairsClosedPairs, a:key)
+      let n = stridx(after, a:key)
+      if n != -1
+        return repeat(s:Right, n+1)
+      end
+      if search(a:key, 'W')
+        " force break the '.' when jump to different line
+        return "\<Right>"
+      endif
+    endif
 
+    " Insert directly if the key is not an open key
+    return a:key
+  end
 
-"*****************************************************************************
-" 代码自动完成，安装完插件还需要额外配置才可以使用
-Plug 'ycm-core/YouCompleteMe'
+  let open = a:key
+  let close = b:AutoPairs[open]
 
-" 用来提供一个导航目录的侧边栏
-" Plug 'scrooloose/nerdtree'
+  if current_char == close && open == close
+    return s:Right
+  end
 
-" 可以使 nerdtree 的 tab 更加友好些
-Plug 'jistr/vim-nerdtree-tabs'
+  " Ignore auto close ' if follows a word
+  " MUST after closed check. 'hello|'
+  if a:key == "'" && prev_char =~ '\v\w'
+    return a:key
+  end
 
-" 可以在导航目录中看到 git 版本信息
-" Plug 'Xuyuanp/nerdtree-git-plugin'
+  " support for ''' ``` and """
+  if open == close
+    " The key must be ' " `
+    let pprev_char = line[col('.')-3]
+    if pprev_char == open && prev_char == open
+      " Double pair found
+      return repeat(a:key, 4) . repeat(s:Left, 3)
+    end
+  end
 
-" 查看当前代码文件中的变量和函数列表的插件，
-" 可以切换和跳转到代码中对应的变量和函数的位置
-" 大纲式导航, Go 需要 https://github.com/jstemmer/gotags 支持
-" Plug 'preservim/tagbar'
+  let quotes_num = 0
+  " Ignore comment line for vim file
+  if &filetype == 'vim' && a:key == '"'
+    if before =~ '^\s*$'
+      return a:key
+    end
+    if before =~ '^\s*"'
+      let quotes_num = -1
+    end
+  end
 
-" 自动补全括号的插件，包括小括号，中括号，以及花括号 沒有
-Plug 'jiangmiao/auto-pairs'
-
-" Vim状态栏插件，包括显示行号，列号，文件类型，文件名，以及Git状态
-" Plug 'vim-airline/vim-airline'
-
-" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-" 可以快速对齐的插件 沒有
-Plug 'junegunn/vim-easy-align'
-
-" 可以在文档中显示 git 信息
-" Plug 'airblade/vim-gitgutter'
-
-" markdown 插件 沒有
-Plug 'iamcco/mathjax-support-for-mkdp'
-Plug 'iamcco/markdown-preview.vim'
-
-" 下面两个插件要配合使用，可以自动生成代码块 沒有
-Plug 'SirVer/ultisnips'
-" Plug 'honza/vim-snippets'
-
-" go 主要插件
-Plug 'fatih/vim-go', { 'tag': '*' }
-
-" go 中的代码追踪，输入 gd 就可以自动跳转
-Plug 'dgryski/vim-godef'
-
-" 可以在 vim 中使用 tab 补全
-"Plug 'vim-scripts/SuperTab'
-
-" 可以在 vim 中自动完成
-"Plug 'Shougo/neocomplete.vim'
-
-
-" 插件结束的位置，插件全部放在此行上面
-"*****************************************************************************
-
-"" Include user's extra bundle
-if filereadable(expand("~/.vimrc.local.bundles"))
-  source ~/.vimrc.local.bundles
-endif
-
-call plug#end()
-
-" Required:
-filetype plugin indent on
-
-
-"*****************************************************************************
-"" Basic Setup
-"*****************************************************************************"
-"" Encoding
-set encoding=utf-8
-set fileencoding=utf-8
-set fileencodings=utf-8
-set bomb
-set binary
-set ttyfast
-
-"" Fix backspace indent
-set backspace=indent,eol,start
-
-"" Tabs. May be overriten by autocmd rules
-set tabstop=4
-set softtabstop=0
-set shiftwidth=4
-set expandtab
-
-set list
-set listchars=eol:⏎,tab:>-,trail:␠,nbsp:⎵
-
-"" Map leader to ,
-let mapleader=','
-
-"" Enable hidden buffers
-set hidden
-
-"" Searching
-set hlsearch
-set incsearch
-set ignorecase
-set smartcase
-
-"" Directories for swp files
-set nobackup
-set noswapfile
-
-set fileformats=unix,dos,mac
-set showcmd
-
-if exists('$SHELL')
-    set shell=$SHELL
-else
-    set shell=/bin/sh
-endif
-
-" session management
-let g:session_directory = "~/.vim/session"
-let g:session_autoload = "no"
-let g:session_autosave = "no"
-let g:session_command_aliases = 1
-
-
-
-"*****************************************************************************
-"" Visual Settings
-"*****************************************************************************
-syntax on
-set ruler
-set number
-set relativenumber             " Show relative line numbers
-set cursorline
-
-
-let no_buffers_menu=1
-if !exists('g:not_finish_vimplug')
-  colorscheme molokai
-endif
-
-set mousemodel=popup
-set t_Co=256
-set guioptions=egmrti
-set gfn=Monospace\ 10
-
-if has("gui_running")
-  if has("gui_mac") || has("gui_macvim")
-    set guifont=Menlo:h12
-    set transparency=7
-  endif
-else
-  let g:CSApprox_loaded = 1
-
-  " IndentLine
-  let g:indentLine_enabled = 1
-  let g:indentLine_concealcursor = 0
-  let g:indentLine_char = '┆'
-  let g:indentLine_faster = 1
-  " Background (Vim, GVim)
-  " let g:indentLine_bgcolor_term = 202
-  " let g:indentLine_bgcolor_gui = '#FF5F00'
-
-
-  if $COLORTERM == 'gnome-terminal'
-    set term=gnome-256color
-  else
-    if $TERM == 'xterm'
-      set term=xterm-256color
+  " Keep quote number is odd.
+  " Because quotes should be matched in the same line in most of situation
+  if g:AutoPairsSmartQuotes && open == close
+    " Remove \\ \" \'
+    let cleaned_line = substitute(line, '\v(\\.)', '', 'g')
+    let n = quotes_num
+    let pos = 0
+    while 1
+      let pos = stridx(cleaned_line, open, pos)
+      if pos == -1
+        break
+      end
+      let n = n + 1
+      let pos = pos + 1
+    endwhile
+    if n % 2 == 1
+      return a:key
     endif
   endif
 
-endif
-
-
-if &term =~ '256color'
-  set t_ut=
-endif
-
-
-highlight clear CursorLine to clear the current cusorline hl
-highlight CursorLine gui=underline cterm=underline
-highlight Visual cterm=bold ctermbg=Blue ctermfg=NONE
-
-
-"" Disable the blinking cursor.
-set gcr=a:blinkon0
-set scrolloff=3
-
-"
-
-"" Status bar
-set laststatus=2
-
-"" Use modeline overrides
-set modeline
-set modelines=10
-
-set title
-set titleold="Terminal"
-set titlestring=%F
-
-set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
-
-" Search mappings: These will make it so that going to the next one in a
-" search will center on the line it's found in.
-nnoremap n nzzzv
-nnoremap N Nzzzv
-
-if exists("*fugitive#statusline")
-  set statusline+=%{fugitive#statusline()}
-endif
-
-" vim-airline
-"let g:airline_theme = 'powerlineish'
-let g:airline_theme = 'cobalt2'
-let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:airline#extensions#syntastic#enabled = 1
-let g:airline#extensions#branch#enabled = 1
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tagbar#enabled = 1
-let g:airline_skip_empty_sections = 1
-
-"*****************************************************************************
-"" Abbreviations
-"*****************************************************************************
-"" no one is really happy until you have this shortcuts
-cnoreabbrev W! w!
-cnoreabbrev Q! q!
-cnoreabbrev Qall! qall!
-cnoreabbrev Wq wq
-cnoreabbrev Wa wa
-cnoreabbrev wQ wq
-cnoreabbrev WQ wq
-cnoreabbrev W w
-cnoreabbrev Q q
-cnoreabbrev Qall qall
-
-"" NERDTree configuration
-let g:NERDTreeChDirMode=2
-let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
-let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
-let g:NERDTreeShowBookmarks=1
-let g:nerdtree_tabs_focus_on_files=1
-" let g:NERDTreeMapOpenInTab='<ENTER>'
-let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
-let g:NERDTreeWinSize = 50
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
-nnoremap <silent> <F2> :NERDTreeFind<CR>
-noremap <F3> :NERDTreeToggle<CR>
-
-" grep.vim
-nnoremap <silent> <leader>f :Rgrep<CR>
-let Grep_Default_Options = '-IR'
-let Grep_Skip_Files = '*.log *.db'
-let Grep_Skip_Dirs = '.git node_modules'
-let Grep_Default_Filelist = '*.py *.yml *.html *.js'
-
-
-" vimshell.vim
-let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-let g:vimshell_prompt =  '$ '
-
-" terminal emulation
-if g:vim_bootstrap_editor == 'nvim'
-  nnoremap <silent> <leader>sh :terminal<CR>
-else
-  nnoremap <silent> <leader>sh :VimShellCreate<CR>
-endif
-
-"*****************************************************************************
-"" Functions
-"*****************************************************************************
-if !exists('*s:setupWrapping')
-  function s:setupWrapping()
-    set wrap
-    set wm=2
-    set textwidth=79
-  endfunction
-endif
-
-"*****************************************************************************
-"" Autocmd Rules
-"*****************************************************************************
-"" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
-augroup vimrc-sync-fromstart
-  autocmd!
-  autocmd BufEnter * :syntax sync maxlines=200
-augroup END
-
-"" Remember cursor position
-augroup vimrc-remember-cursor-position
-  autocmd!
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-augroup END
-
-"" txt
-augroup vimrc-wrapping
-  autocmd!
-  autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
-augroup END
-
-"" make/cmake
-augroup vimrc-make-cmake
-  autocmd!
-  autocmd FileType make setlocal noexpandtab
-  autocmd BufNewFile,BufRead CMakeLists.txt setlocal filetype=cmake
-augroup END
-
-set autoread
-
-"*****************************************************************************
-"" Mappings
-"*****************************************************************************
-
-"" Split
-noremap <Leader>h :<C-u>split<CR>
-noremap <Leader>v :<C-u>vsplit<CR>
-
-"" Git
-noremap <Leader>ga :Gwrite<CR>
-noremap <Leader>gc :Gcommit<CR>
-noremap <Leader>gsh :Gpush<CR>
-noremap <Leader>gll :Gpull<CR>
-noremap <Leader>gs :Gstatus<CR>
-noremap <Leader>gb :Gblame<CR>
-noremap <Leader>gd :Gvdiff<CR>
-noremap <Leader>gr :Gremove<CR>
-
-" session management
-nnoremap <leader>so :OpenSession<Space>
-nnoremap <leader>ss :SaveSession<Space>
-nnoremap <leader>sd :DeleteSession<CR>
-nnoremap <leader>sc :CloseSession<CR>
-
-"" Tabs
-"" nnoremap <Tab> gt
-nnoremap <S-Tab> gT
-nnoremap <silent> <S-t> :tabnew<CR>
-
-"" Set working directory
-nnoremap <leader>. :lcd %:p:h<CR>
-
-"" Opens an edit command with the path of the currently edited file filled in
-noremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
-
-"" Opens a tab edit command with the path of the currently edited file filled
-noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
-"" fzf.vim
-set wildmode=list:longest,list:full
-set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,__pycache__
-let $FZF_DEFAULT_COMMAND =  "find * -path '*/\.*' -prune -o -path 'node_modules/**' -prune -o -path 'target/**' -prune -o -path 'dist/**' -prune -o  -type f -print -o -type l -print 2> /dev/null"
-
-" The Silver Searcher
-if executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
-  set grepprg=ag\ --nogroup\ --nocolor
-endif
-
-" ripgrep
-if executable('rg')
-  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
-  set grepprg=rg\ --vimgrep
-  command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
-endif
-
-cnoremap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
-nnoremap <silent> <leader>b :Buffers<CR>
-nnoremap <silent> <leader>e :FZF -m<CR>
-
-" snippets
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<c-b>"
-let g:UltiSnipsEditSplit="vertical"
-
-
-" Ale
-let g:ale_linters = {
-\       'python': ['flake8', 'pylint'],
-\   'javascript': ['eslint'],
-\   'typescript': ['tslint'],
-\   'html': ['tidy']
-\}
-let g:airline#extensions#ale#enabled = 1
-let g:ale_echo_msg_format = '[%linter%] %...code...% >> %s [%severity%]'
-let g:ale_lint_delay = 500
-let g:ale_fixers = {
-\       'python': ['autopep8', 'yapf']
-\}
-" nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-" nmap <silent> <C-j> <Plug>(ale_next_wrap)
-
-
-" syntastic
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_error_symbol='✗'
-let g:syntastic_warning_symbol='⚠'
-let g:syntastic_style_error_symbol = '✗'
-let g:syntastic_style_warning_symbol = '⚠'
-let g:syntastic_auto_loc_list=1
-let g:syntastic_aggregate_errors = 1
-
-" Tagbar
-" nmap <silent> <F4> :TagbarToggle<CR>
-" nmap <F4> :TagbarToggle<CR>
-nmap <F8> :TagbarToggle<CR>
-
-let g:tagbar_autofocus = 1
-
-" Disable visualbell
-set noerrorbells visualbell t_vb=
-if has('autocmd')
-  autocmd GUIEnter * set visualbell t_vb=
-endif
-
-"" Copy/Paste/Cut
-if has('unnamedplus')
-  set clipboard=unnamed,unnamedplus
-endif
-
-noremap YY "+y<CR>
-noremap <leader>p "+gP<CR>
-noremap XX "+x<CR>
-
-if has('macunix')
-  " pbcopy for OSX copy/paste
-  vmap <C-x> :!pbcopy<CR>
-  vmap <C-c> :w !pbcopy<CR><CR>
-endif
-
-"" Buffer nav
-noremap <leader>z :bp<CR>
-noremap <leader>q :bp<CR>
-noremap <leader>x :bn<CR>
-noremap <leader>w :bn<CR>
-
-"" Close buffer
-noremap <leader>c :bd<CR>
-
-"" Clean search (highlight)
-nnoremap <silent> <leader><space> :noh<cr>
-
-"" Switching windows
-noremap <C-j> <C-w>j
-noremap <C-k> <C-w>k
-noremap <C-l> <C-w>l
-noremap <C-h> <C-w>h
-
-
-" remove highlight after search
-nnoremap <Leader><space> :noh<cr>
-
-
-"" Vmap for maintain Visual Mode after shifting > and <
-vmap < <gv
-vmap > >gv
-
-"" Move visual block
-vnoremap J :m '>+1<CR>gv=gv
-vnoremap K :m '<-2<CR>gv=gv
-
-"" Open current line on GitHub
-nnoremap <Leader>o :.Gbrowse<CR>
-
-"*****************************************************************************
-"" Custom configs
-"*****************************************************************************
-
-" c
-autocmd FileType c setlocal tabstop=4 shiftwidth=4 expandtab
-autocmd FileType cpp setlocal tabstop=4 shiftwidth=4 expandtab
-
-" html
-" for html files, 2 spaces
- autocmd Filetype html setlocal ts=2 sw=2 expandtab
-
-
-" javascript
-let g:javascript_enable_domhtmlcss = 1
-
-" vim-javascript
-augroup vimrc-javascript
-  autocmd!
-  autocmd FileType javascript setlocal tabstop=4 shiftwidth=4 noexpandtab softtabstop=4 autoindent
-augroup END
-
-
-" python
-" vim-python
-augroup vimrc-python
-  autocmd!
-  autocmd FileType python setlocal tabstop=4 shiftwidth=4 colorcolumn=79 noexpandtab  autoindent
-      \ formatoptions+=croq softtabstop=4
-      \ cinwords=if,elif,else,for,while,try,except,finally,def,class,with
-augroup END
-set autoindent noexpandtab tabstop=4 shiftwidth=4
-
-function! Generate_pdb()
-        call append(line('.') - 1, 'import ipdb; ipdb.set_trace()')
+  return open.close.s:Left
 endfunction
 
-nmap <leader>pdb  :call Generate_pdb()<CR>
+function! AutoPairsDelete()
+  if !b:autopairs_enabled
+    return "\<BS>"
+  end
 
-" Javascript
-let g:javascript_plugin_ngdoc = 1
-let g:javascript_plugin_flow = 1
+  let line = getline('.')
+  let pos = col('.') - 1
+  let current_char = get(split(strpart(line, pos), '\zs'), 0, '')
+  let prev_chars = split(strpart(line, 0, pos), '\zs')
+  let prev_char = get(prev_chars, -1, '')
+  let pprev_char = get(prev_chars, -2, '')
 
-let g:javascript_conceal_function             = "ƒ"
-let g:javascript_conceal_null                 = "ø"
-let g:javascript_conceal_this                 = "@"
-let g:javascript_conceal_return               = "⇚"
-let g:javascript_conceal_undefined            = "¿"
-let g:javascript_conceal_NaN                  = "ℕ"
-let g:javascript_conceal_prototype            = "¶"
-let g:javascript_conceal_static               = "•"
-let g:javascript_conceal_super                = "Ω"
-let g:javascript_conceal_arrow_function       = "⇒"
-let g:javascript_conceal_noarg_arrow_function = "🞅"
-let g:javascript_conceal_underscore_arrow_function = "🞅"
+  if pprev_char == '\'
+    return "\<BS>"
+  end
 
-map <leader>l :exec &conceallevel ? "set conceallevel=0" : "set conceallevel=1"<CR>
+  " Delete last two spaces in parens, work with MapSpace
+  if has_key(b:AutoPairs, pprev_char) && prev_char == ' ' && current_char == ' '
+    return "\<BS>\<DEL>"
+  endif
 
+  " Delete Repeated Pair eg: '''|''' [[|]] {{|}}
+  if has_key(b:AutoPairs, prev_char)
+    let times = 0
+    let p = -1
+    while get(prev_chars, p, '') == prev_char
+      let p = p - 1
+      let times = times + 1
+    endwhile
 
+    let close = b:AutoPairs[prev_char]
+    let left = repeat(prev_char, times)
+    let right = repeat(close, times)
 
+    let before = strpart(line, pos-times, times)
+    let after  = strpart(line, pos, times)
+    if left == before && right == after
+      return repeat("\<BS>\<DEL>", times)
+    end
+  end
 
+  if has_key(b:AutoPairs, prev_char)
+    let close = b:AutoPairs[prev_char]
+    if match(line,'^\s*'.close, col('.')-1) != -1
+      " Delete (|___)
+      let space = matchstr(line, '^\s*', col('.')-1)
+      return "\<BS>". repeat("\<DEL>", len(space)+1)
+    elseif match(line, '^\s*$', col('.')-1) != -1
+      " Delete (|__\n___)
+      let nline = getline(line('.')+1)
+      if nline =~ '^\s*'.close
+        if &filetype == 'vim' && prev_char == '"'
+          " Keep next line's comment
+          return "\<BS>"
+        end
 
-" jedi-vim
-let g:jedi#popup_on_dot = 1
-let g:jedi#goto_assignments_command = "<leader>g"
-let g:jedi#goto_definitions_command = "<leader>d"
-let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = "<leader>n"
-let g:jedi#rename_command = "<leader>r"
-let g:jedi#show_call_signatures = "2"
-let g:jedi#smart_auto_mappings = 0
-" disable docstring window to popup during completion
+        let space = matchstr(nline, '^\s*')
+        return "\<BS>\<DEL>". repeat("\<DEL>", len(space)+1)
+      end
+    end
+  end
 
+  return "\<BS>"
+endfunction
 
-" let g:ycm_python_binary_path = 'python'
-" let g:ycm_autoclose_preview_window_after_completion=1
-" let g:ycm_filetype_specific_completion_to_disable = { 'python': 1 }
-" nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
+function! AutoPairsJump()
+  call search('["\]'')}]','W')
+endfunction
+" string_chunk cannot use standalone
+let s:string_chunk = '\v%(\\\_.|[^\1]|[\r\n]){-}'
+let s:ss_pattern = '\v''' . s:string_chunk . ''''
+let s:ds_pattern = '\v"'  . s:string_chunk . '"'
 
-autocmd FileType python setlocal completeopt-=preview
-" setlocal completeopt=menuone,longest,preview
-" setlocal omnifunc=jedi#completions
-
-
-" syntastic
-let g:syntastic_python_checkers=['python', 'flake8']
-
-" vim-airline
-let g:airline#extensions#virtualenv#enabled = 1
-
-" Syntax highlight
-" Default highlight is better than polyglot
-" let g:polyglot_disabled = ['python']
-let g:graphql_javascript_tags = []
-let python_highlight_all = 1
-
-" Python Identation
-
-"*****************************************************************************
-"*****************************************************************************
-
-"" Include user's local vim config
-if filereadable(expand("~/.vimrc.local"))
-  source ~/.vimrc.local
-endif
-
-"*****************************************************************************
-"" Convenience variables
-"*****************************************************************************
-
-" vim-airline
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-
-if !exists('g:airline_powerline_fonts')
-  let g:airline#extensions#tabline#left_sep = ' '
-  let g:airline#extensions#tabline#left_alt_sep = '|'
-  let g:airline_left_sep          = '▶'
-  let g:airline_left_alt_sep      = '»'
-  let g:airline_right_sep         = '◀'
-  let g:airline_right_alt_sep     = '«'
-  let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
-  let g:airline#extensions#readonly#symbol   = '⊘'
-  let g:airline#extensions#linecolumn#prefix = '¶'
-  let g:airline#extensions#paste#symbol      = 'ρ'
-  let g:airline_symbols.linenr    = '␊'
-  let g:airline_symbols.branch    = '⎇'
-  let g:airline_symbols.paste     = 'ρ'
-  let g:airline_symbols.paste     = 'Þ'
-  let g:airline_symbols.paste     = '∥'
-  let g:airline_symbols.whitespace = 'Ξ'
-else
-  let g:airline#extensions#tabline#left_sep = ''
-  let g:airline#extensions#tabline#left_alt_sep = ''
-
-  " powerline symbols
-  let g:airline_left_sep = ''
-  let g:airline_left_alt_sep = ''
-  let g:airline_right_sep = ''
-  let g:airline_right_alt_sep = ''
-  let g:airline_symbols.branch = ''
-  let g:airline_symbols.readonly = ''
-  let g:airline_symbols.linenr = ''
-endif
-
-
-"vimscript
-"let g:NERDTreeIndicatorMapCustom = {
-let g:NERDTreeGitStatusIndicatorMapCustom = {
-    \ "Modified"  : "✹",
-    \ "Staged"    : "✚",
-    \ "Untracked" : "✭",
-    \ "Renamed"   : "➜",
-    \ "Unmerged"  : "═",
-    \ "Deleted"   : "✖",
-    \ "Dirty"     : "✗",
-    \ "Clean"     : "✔︎",
-    \ 'Ignored'   : '☒',
-    \ "Unknown"   : "?"
-    \ }
-
-let g:NERDTreeNodeDelimiter = "\u00a0"
-
-" syntastic_
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
-" let g:syntastic_python_checkers = ['mypy']
-
-
-" supertab
-let g:SuperTabContextDefaultCompletionType = "<c-x><c-o>""
-let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabLongestEnhanced = 1
-let g:SuperTabCrMapping = 0
-
- " Disable auto popup, use <Tab> to autocomplete
- " let g:clang_complete_auto = 0
- " Show clang errors in the quickfix window
- " let g:clang_complete_copen = 1
-
-" VirtualEnv
-let g:virtualenv_directory = '/Users/reubinoff/venv/ra'
-
-
-if v:version >= 600
-  filetype plugin on
-  filetype indent on
-else
-  filetype on
-endif
-
-
-noremap <F12> <Esc>:syntax sync fromstart<CR>
-
-
-
-nnoremap <F6> :e %:p:s,.hpp$,.X123X,:s,.cpp$,.hpp,:s,.X123X$,.cpp,<CR>
-nnoremap <F5> :edit <CR>
-
-set pastetoggle=<F4>
-
-"scroll with mouse
-:set mouse=a
-
-"override the option tt to remove tab signs
-set invlist
-nnoremap <leader>tt :set invlist<cr>
-let g:easytags_async = 1
-"
-"auto add pyhton header --start
-"autocmd BufNewFile *.py 0r ~/.vim/vim_template/vim_pyhton_header
-"autocmd BufNewFile *.py ks|call FileName()|'s
-"autocmd BufNewFile *.py ks|call CreatedTime()|'s
-"fun FileName()
-""      if line("$") > 10
-"               let l = 10  "这里是字母L 不是数字1
-""      else
-""              let l = line("$")
-""      endif
-""      exe "1," . l . "g/File Name:.*/s/File Name:.*/File Name: " .expand("%")
-"       "最前面是数字1，这里的File Name: 要和模板中一致
-"endfun
-"fun CreatedTime()
-""      if line("$") > 10
-""              let l = 10
-""      else
-""              let l = line("$")
-""      endif
-"exe "1," . l . "g/Created Time:.*/s/Created Time:.*/Created Time: " .strftime("%Y-%m-%d %T")
-"        "这里Create Time: 要和模板中一致
-"endfun
-"auto add python header --end
-" python and shell script header.
-" python and shell script header.
-function AddTitlePython()
-    call setline(1, "#!/usr/bin/python")
-    call append(1, "#-*- coding: utf-8 -*-")
-    call append(2, "#===============================================================================")
-    call append(3, "#")
-    call append(4, "#         Filename:       " . expand("%"))
-    call append(5, "#")
-    call append(6, "#        USAGE: " . expand("%"))
-    call append(7, "#")
-    call append(8, "#  DESCRIPTION: ")
-    call append(9, "#")
-    call append(10, "#      OPTIONS: ---")
-    call append(11, "# REQUIREMENTS: ---")
-    call append(12, "#         BUGS: ---")
-    call append(13, "#        NOTES: ---")
-    call append(14, "#       AUTHOR: Oscarob Wu(oscarobwu@gmail.com), ")
-    call append(15, "# ORGANIZATION: ")
-    call append(16, "#      VERSION: 1.0")
-    call append(17, "#      Created Time:  ")
-    call append(18, "#      Last modified:  ")
-    call append(19, "#     REVISION: ---")
-    call append(20, "#===============================================================================")
+func! s:RegexpQuote(str)
+  return substitute(a:str, '\v[\[\{\(\<\>\)\}\]]', '\\&', 'g')
 endf
-function AddTitleSH()
-    call setline(1, "#!/bin/sh")
-    call append(1, "#-*- coding: utf-8 -*-")
-    call append(2, "#===============================================================================")
-    call append(3, "#")
-    call append(4, "#         Filename:       " . expand("%"))
-    call append(5, "#")
-    call append(6, "#        USAGE: " . expand("%"))
-    call append(7, "#")
-    call append(8, "#  DESCRIPTION: ")
-    call append(9, "#")
-    call append(10, "#      OPTIONS: ---")
-    call append(11, "# REQUIREMENTS: ---")
-    call append(12, "#         BUGS: ---")
-    call append(13, "#        NOTES: ---")
-    call append(14, "#       AUTHOR: Oscarob Wu(oscarobwu@gmail.com), ")
-    call append(15, "# ORGANIZATION: ")
-    call append(16, "#      VERSION: 1.0")
-    call append(17, "#      Created Time:  ")
-    call append(18, "#      Last modified:  ")
-    call append(19, "#     REVISION: ---")
-    call append(20, "#===============================================================================")
-endf
-fun UpdateDate()
-      if line("$") > 1
-              let l = 20
-      else
-              let l = line("$")
-      endif
-exe "1," . 20 . "g/Last modified:.*/s/Last modified:.*/Last modified: " .strftime("%Y-%m-%d %H:%M")
-    "
-endfun
-fun CreatedTime()
-      if line("$") > 1
-              let l = 20
-      else
-              let l = line("$")
-      endif
-exe "1," . 20 . "g/Created Time:.*/s/Created Time:.*/Created Time: " .strftime("%Y-%m-%d %T")
-        "这里Create Time: 要和模板中一致
-endfun
-"
-autocmd bufnewfile *.py call AddTitlePython()
-autocmd bufNewFile *.py ks|call CreatedTime()|'s
-autocmd bufwritepre *.py ks|call UpdateDate()|'s
-autocmd bufnewfile *.sh call AddTitleSH()
-autocmd bufNewFile *.sh ks|call CreatedTime()|'s
-autocmd bufwritepre *.sh ks|call UpdateDate()|'s
 
+func! s:RegexpQuoteInSquare(str)
+  return substitute(a:str, '\v[\[\]]', '\\&', 'g')
+endf
+
+" Search next open or close pair
+func! s:FormatChunk(open, close)
+  let open = s:RegexpQuote(a:open)
+  let close = s:RegexpQuote(a:close)
+  let open2 = s:RegexpQuoteInSquare(a:open)
+  let close2 = s:RegexpQuoteInSquare(a:close)
+  if open == close
+    return '\v'.open.s:string_chunk.close
+  else
+    return '\v%(' . s:ss_pattern . '|' . s:ds_pattern . '|' . '[^'.open2.close2.']|[\r\n]' . '){-}(['.open2.close2.'])'
+  end
+endf
+
+" Fast wrap the word in brackets
+function! AutoPairsFastWrap()
+  let line = getline('.')
+  let current_char = line[col('.')-1]
+  let next_char = line[col('.')]
+  let open_pair_pattern = '\v[({\[''"]'
+  let at_end = col('.') >= col('$') - 1
+  normal x
+  " Skip blank
+  if next_char =~ '\v\s' || at_end
+    call search('\v\S', 'W')
+    let line = getline('.')
+    let next_char = line[col('.')-1]
+  end
+
+  if has_key(b:AutoPairs, next_char)
+    let followed_open_pair = next_char
+    let inputed_close_pair = current_char
+    let followed_close_pair = b:AutoPairs[next_char]
+    if followed_close_pair != followed_open_pair
+      " TODO replace system searchpair to skip string and nested pair.
+      " eg: (|){"hello}world"} will transform to ({"hello})world"}
+      call searchpair('\V'.followed_open_pair, '', '\V'.followed_close_pair, 'W')
+    else
+      call search(s:FormatChunk(followed_open_pair, followed_close_pair), 'We')
+    end
+    return s:Right.inputed_close_pair.s:Left
+  else
+    normal he
+    return s:Right.current_char.s:Left
+  end
+endfunction
+
+function! AutoPairsMap(key)
+  " | is special key which separate map command from text
+  let key = a:key
+  if key == '|'
+    let key = '<BAR>'
+  end
+  let escaped_key = substitute(key, "'", "''", 'g')
+  " use expr will cause search() doesn't work
+  execute 'inoremap <buffer> <silent> '.key." <C-R>=AutoPairsInsert('".escaped_key."')<CR>"
+endfunction
+
+function! AutoPairsToggle()
+  if b:autopairs_enabled
+    let b:autopairs_enabled = 0
+    echo 'AutoPairs Disabled.'
+  else
+    let b:autopairs_enabled = 1
+    echo 'AutoPairs Enabled.'
+  end
+  return ''
+endfunction
+
+function! AutoPairsReturn()
+  if b:autopairs_enabled == 0
+    return ''
+  end
+  let line = getline('.')
+  let pline = getline(line('.')-1)
+  let prev_char = pline[strlen(pline)-1]
+  let cmd = ''
+  let cur_char = line[col('.')-1]
+  if has_key(b:AutoPairs, prev_char) && b:AutoPairs[prev_char] == cur_char
+    if g:AutoPairsCenterLine && winline() * 3 >= winheight(0) * 2
+      " Use \<BS> instead of \<ESC>cl will cause the placeholder deleted
+      " incorrect. because <C-O>zz won't leave Normal mode.
+      " Use \<DEL> is a bit wierd. the character before cursor need to be deleted.
+      " Adding a space, recentering, and deleting it interferes with default
+      " whitespace-removing behavior when exiting insert mode.
+      let cmd = "\<ESC>zzcc"
+    end
+
+    " If equalprg has been set, then avoid call =
+    " https://github.com/jiangmiao/auto-pairs/issues/24
+    if &equalprg != ''
+      return "\<ESC>O".cmd
+    endif
+
+    " conflict with javascript and coffee
+    " javascript   need   indent new line
+    " coffeescript forbid indent new line
+    if &filetype == 'coffeescript' || &filetype == 'coffee'
+      return "\<ESC>k==o".cmd
+    else
+      return "\<ESC>=ko".cmd
+    endif
+  end
+  return ''
+endfunction
+
+function! AutoPairsSpace()
+  let line = getline('.')
+  let prev_char = line[col('.')-2]
+  let cmd = ''
+  let cur_char =line[col('.')-1]
+  if has_key(g:AutoPairsParens, prev_char) && g:AutoPairsParens[prev_char] == cur_char
+    let cmd = "\<SPACE>".s:Left
+  endif
+  return "\<SPACE>".cmd
+endfunction
+
+function! AutoPairsBackInsert()
+  if exists('b:autopairs_saved_pair')
+    let pair = b:autopairs_saved_pair[0]
+    let pos  = b:autopairs_saved_pair[1]
+    call setpos('.', pos)
+    return pair
+  endif
+  return ''
+endfunction
+
+function! AutoPairsInit()
+  let b:autopairs_loaded  = 1
+  let b:autopairs_enabled = 1
+  let b:AutoPairsClosedPairs = {}
+
+  if !exists('b:AutoPairs')
+    let b:AutoPairs = g:AutoPairs
+  end
+
+  " buffer level map pairs keys
+  for [open, close] in items(b:AutoPairs)
+    call AutoPairsMap(open)
+    if open != close
+      call AutoPairsMap(close)
+    end
+    let b:AutoPairsClosedPairs[close] = open
+  endfor
+
+  " Still use <buffer> level mapping for <BS> <SPACE>
+  if g:AutoPairsMapBS
+    " Use <C-R> instead of <expr> for issue #14 sometimes press BS output strange words
+    execute 'inoremap <buffer> <silent> <BS> <C-R>=AutoPairsDelete()<CR>'
+  end
+
+  if g:AutoPairsMapCh
+    execute 'inoremap <buffer> <silent> <C-h> <C-R>=AutoPairsDelete()<CR>'
+  endif
+
+  if g:AutoPairsMapSpace
+    " Try to respect abbreviations on a <SPACE>
+    let do_abbrev = ""
+    if v:version == 703 && has("patch489") || v:version > 703
+      let do_abbrev = "<C-]>"
+    endif
+    execute 'inoremap <buffer> <silent> <SPACE> '.do_abbrev.'<C-R>=AutoPairsSpace()<CR>'
+  end
+
+  if g:AutoPairsShortcutFastWrap != ''
+    execute 'inoremap <buffer> <silent> '.g:AutoPairsShortcutFastWrap.' <C-R>=AutoPairsFastWrap()<CR>'
+  end
+
+  if g:AutoPairsShortcutBackInsert != ''
+    execute 'inoremap <buffer> <silent> '.g:AutoPairsShortcutBackInsert.' <C-R>=AutoPairsBackInsert()<CR>'
+  end
+
+  if g:AutoPairsShortcutToggle != ''
+    " use <expr> to ensure showing the status when toggle
+    execute 'inoremap <buffer> <silent> <expr> '.g:AutoPairsShortcutToggle.' AutoPairsToggle()'
+    execute 'noremap <buffer> <silent> '.g:AutoPairsShortcutToggle.' :call AutoPairsToggle()<CR>'
+  end
+
+  if g:AutoPairsShortcutJump != ''
+    execute 'inoremap <buffer> <silent> ' . g:AutoPairsShortcutJump. ' <ESC>:call AutoPairsJump()<CR>a'
+    execute 'noremap <buffer> <silent> ' . g:AutoPairsShortcutJump. ' :call AutoPairsJump()<CR>'
+  end
+
+endfunction
+
+function! s:ExpandMap(map)
+  let map = a:map
+  let map = substitute(map, '\(<Plug>\w\+\)', '\=maparg(submatch(1), "i")', 'g')
+  return map
+endfunction
+
+function! AutoPairsTryInit()
+  if exists('b:autopairs_loaded')
+    return
+  end
+
+  " for auto-pairs starts with 'a', so the priority is higher than supertab and vim-endwise
+  "
+  " vim-endwise doesn't support <Plug>AutoPairsReturn
+  " when use <Plug>AutoPairsReturn will cause <Plug> isn't expanded
+  "
+  " supertab doesn't support <SID>AutoPairsReturn
+  " when use <SID>AutoPairsReturn  will cause Duplicated <CR>
+  "
+  " and when load after vim-endwise will cause unexpected endwise inserted.
+  " so always load AutoPairs at last
+
+  " Buffer level keys mapping
+  " comptible with other plugin
+  if g:AutoPairsMapCR
+    if v:version == 703 && has('patch32') || v:version > 703
+      " VIM 7.3 supports advancer maparg which could get <expr> info
+      " then auto-pairs could remap <CR> in any case.
+      let info = maparg('<CR>', 'i', 0, 1)
+      if empty(info)
+        let old_cr = '<CR>'
+        let is_expr = 0
+      else
+        let old_cr = info['rhs']
+        let old_cr = s:ExpandMap(old_cr)
+        let old_cr = substitute(old_cr, '<SID>', '<SNR>' . info['sid'] . '_', 'g')
+        let is_expr = info['expr']
+        let wrapper_name = '<SID>AutoPairsOldCRWrapper73'
+      endif
+    else
+      " VIM version less than 7.3
+      " the mapping's <expr> info is lost, so guess it is expr or not, it's
+      " not accurate.
+      let old_cr = maparg('<CR>', 'i')
+      if old_cr == ''
+        let old_cr = '<CR>'
+        let is_expr = 0
+      else
+        let old_cr = s:ExpandMap(old_cr)
+        " old_cr contain (, I guess the old cr is in expr mode
+        let is_expr = old_cr =~ '\V(' && toupper(old_cr) !~ '\V<C-R>'
+
+        " The old_cr start with " it must be in expr mode
+        let is_expr = is_expr || old_cr =~ '\v^"'
+        let wrapper_name = '<SID>AutoPairsOldCRWrapper'
+      end
+    end
+
+    if old_cr !~ 'AutoPairsReturn'
+      if is_expr
+        " remap <expr> to `name` to avoid mix expr and non-expr mode
+        execute 'inoremap <buffer> <expr> <script> '. wrapper_name . ' ' . old_cr
+        let old_cr = wrapper_name
+      end
+      " Always silent mapping
+      execute 'inoremap <script> <buffer> <silent> <CR> '.old_cr.'<SID>AutoPairsReturn'
+    end
+  endif
+  call AutoPairsInit()
+endfunction
+
+" Always silent the command
+inoremap <silent> <SID>AutoPairsReturn <C-R>=AutoPairsReturn()<CR>
+imap <script> <Plug>AutoPairsReturn <SID>AutoPairsReturn
+
+au BufEnter * :call AutoPairsTryInit()
+
+
+
+
+
+
+
+
+" Vim color file
+" Converted from Textmate theme Monokai using Coloration v0.3.2 (http://github.com/sickill/coloration)
+set background=dark
+highlight clear
+if exists("syntax_on")
+  syntax reset
+endif
+set t_Co=256
+let g:colors_name = "monokai"
+hi Cursor ctermfg=235 ctermbg=231 cterm=NONE guifg=#272822 guibg=#f8f8f0 gui=NONE
+hi Visual ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#49483e gui=NONE
+hi CursorLine ctermfg=NONE ctermbg=237 cterm=NONE guifg=NONE guibg=#3c3d37 gui=NONE
+hi CursorColumn ctermfg=NONE ctermbg=237 cterm=NONE guifg=NONE guibg=#3c3d37 gui=NONE
+hi ColorColumn ctermfg=NONE ctermbg=237 cterm=NONE guifg=NONE guibg=#3c3d37 gui=NONE
+hi LineNr ctermfg=102 ctermbg=237 cterm=NONE guifg=#90908a guibg=#3c3d37 gui=NONE
+hi VertSplit ctermfg=241 ctermbg=241 cterm=NONE guifg=#64645e guibg=#64645e gui=NONE
+hi MatchParen ctermfg=197 ctermbg=NONE cterm=underline guifg=#f92672 guibg=NONE gui=underline
+hi StatusLine ctermfg=231 ctermbg=241 cterm=bold guifg=#f8f8f2 guibg=#64645e gui=bold
+hi StatusLineNC ctermfg=231 ctermbg=241 cterm=NONE guifg=#f8f8f2 guibg=#64645e gui=NONE
+hi Pmenu ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi PmenuSel ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#49483e gui=NONE
+hi IncSearch ctermfg=235 ctermbg=186 cterm=NONE guifg=#272822 guibg=#e6db74 gui=NONE
+hi Search ctermfg=NONE ctermbg=NONE cterm=underline guifg=NONE guibg=NONE gui=underline
+hi Directory ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
+hi Folded ctermfg=242 ctermbg=235 cterm=NONE guifg=#75715e guibg=#272822 gui=NONE
+hi SignColumn ctermfg=NONE ctermbg=237 cterm=NONE guifg=NONE guibg=#3c3d37 gui=NONE
+hi Normal ctermfg=231 ctermbg=235 cterm=NONE guifg=#f8f8f2 guibg=#272822 gui=NONE
+hi Boolean ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
+hi Character ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
+hi Comment ctermfg=242 ctermbg=NONE cterm=NONE guifg=#75715e guibg=NONE gui=NONE
+hi Conditional ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi Constant ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi Define ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi DiffAdd ctermfg=231 ctermbg=64 cterm=bold guifg=#f8f8f2 guibg=#46830c gui=bold
+hi DiffDelete ctermfg=88 ctermbg=NONE cterm=NONE guifg=#8b0807 guibg=NONE gui=NONE
+hi DiffChange ctermfg=NONE ctermbg=NONE cterm=NONE guifg=#f8f8f2 guibg=#243955 gui=NONE
+hi DiffText ctermfg=231 ctermbg=24 cterm=bold guifg=#f8f8f2 guibg=#204a87 gui=bold
+hi ErrorMsg ctermfg=231 ctermbg=197 cterm=NONE guifg=#f8f8f0 guibg=#f92672 gui=NONE
+hi WarningMsg ctermfg=231 ctermbg=197 cterm=NONE guifg=#f8f8f0 guibg=#f92672 gui=NONE
+hi Float ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
+hi Function ctermfg=148 ctermbg=NONE cterm=NONE guifg=#a6e22e guibg=NONE gui=NONE
+hi Identifier ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=italic
+hi Keyword ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi Label ctermfg=186 ctermbg=NONE cterm=NONE guifg=#e6db74 guibg=NONE gui=NONE
+hi NonText ctermfg=59 ctermbg=236 cterm=NONE guifg=#49483e guibg=#31322c gui=NONE
+hi Number ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
+hi Operator ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi PreProc ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi Special ctermfg=231 ctermbg=NONE cterm=NONE guifg=#f8f8f2 guibg=NONE gui=NONE
+hi SpecialComment ctermfg=242 ctermbg=NONE cterm=NONE guifg=#75715e guibg=NONE gui=NONE
+hi SpecialKey ctermfg=59 ctermbg=237 cterm=NONE guifg=#49483e guibg=#3c3d37 gui=NONE
+hi Statement ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi StorageClass ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=italic
+hi String ctermfg=186 ctermbg=NONE cterm=NONE guifg=#e6db74 guibg=NONE gui=NONE
+hi Tag ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi Title ctermfg=231 ctermbg=NONE cterm=bold guifg=#f8f8f2 guibg=NONE gui=bold
+hi Todo ctermfg=95 ctermbg=NONE cterm=inverse,bold guifg=#75715e guibg=NONE gui=inverse,bold
+hi Type ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi Underlined ctermfg=NONE ctermbg=NONE cterm=underline guifg=NONE guibg=NONE gui=underline
+hi rubyClass ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi rubyFunction ctermfg=148 ctermbg=NONE cterm=NONE guifg=#a6e22e guibg=NONE gui=NONE
+hi rubyInterpolationDelimiter ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi rubySymbol ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
+hi rubyConstant ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=italic
+hi rubyStringDelimiter ctermfg=186 ctermbg=NONE cterm=NONE guifg=#e6db74 guibg=NONE gui=NONE
+hi rubyBlockParameter ctermfg=208 ctermbg=NONE cterm=NONE guifg=#fd971f guibg=NONE gui=italic
+hi rubyInstanceVariable ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi rubyInclude ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi rubyGlobalVariable ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi rubyRegexp ctermfg=186 ctermbg=NONE cterm=NONE guifg=#e6db74 guibg=NONE gui=NONE
+hi rubyRegexpDelimiter ctermfg=186 ctermbg=NONE cterm=NONE guifg=#e6db74 guibg=NONE gui=NONE
+hi rubyEscape ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
+hi rubyControl ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi rubyClassVariable ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi rubyOperator ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi rubyException ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi rubyPseudoVariable ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi rubyRailsUserClass ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=italic
+hi rubyRailsARAssociationMethod ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
+hi rubyRailsARMethod ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
+hi rubyRailsRenderMethod ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
+hi rubyRailsMethod ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
+hi erubyDelimiter ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi erubyComment ctermfg=95 ctermbg=NONE cterm=NONE guifg=#75715e guibg=NONE gui=NONE
+hi erubyRailsMethod ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
+hi htmlTag ctermfg=148 ctermbg=NONE cterm=NONE guifg=#a6e22e guibg=NONE gui=NONE
+hi htmlEndTag ctermfg=148 ctermbg=NONE cterm=NONE guifg=#a6e22e guibg=NONE gui=NONE
+hi htmlTagName ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi htmlArg ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi htmlSpecialChar ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
+hi javaScriptFunction ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=italic
+hi javaScriptRailsFunction ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
+hi javaScriptBraces ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi yamlKey ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
+hi yamlAnchor ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi yamlAlias ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+hi yamlDocumentHeader ctermfg=186 ctermbg=NONE cterm=NONE guifg=#e6db74 guibg=NONE gui=NONE
+hi cssURL ctermfg=208 ctermbg=NONE cterm=NONE guifg=#fd971f guibg=NONE gui=italic
+hi cssFunctionName ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
+hi cssColor ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
+hi cssPseudoClassId ctermfg=148 ctermbg=NONE cterm=NONE guifg=#a6e22e guibg=NONE gui=NONE
+hi cssClassName ctermfg=148 ctermbg=NONE cterm=NONE guifg=#a6e22e guibg=NONE gui=NONE
+hi cssValueLength ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
+hi cssCommonAttr ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
+hi cssBraces ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE
+
+
+
+
+
+
+
+
+" @t0rr3sp3dr0 Pure
+silent exec "!stty -ixon"
+set autoindent
+set autoread
+set backspace=indent,eol,start
+set cc=80
+set clipboard=unnamed
+set cursorline
+set expandtab
+set exrc
+set laststatus=2
+set nocompatible
+set number
+set pastetoggle=<F2>
+set shiftwidth=4
+set showcmd
+set showmatch
+set showmode
+set smartindent
+set smarttab
+set softtabstop=0
+set t_Co=256
+set tabstop=8
+set wildmenu
+nmap <C-a> <Home>
+imap <C-a> <Esc>I
+vmap <C-a> <Home>
+nmap <C-e> <End>
+imap <C-e> <Esc>A
+vmap <C-e> <End>
+nmap <C-d> yyp
+imap <C-d> <Esc>yypi
+vmap <C-d> <Esc>yypv
+nmap <C-s> :w<CR>
+imap <C-s> <Esc>:w<CR>i
+vmap <C-s> <Esc>:w<CR>v
+nmap <C-w> :x<CR>
+imap <C-w> <Esc>:x<CR>
+vmap <C-w> <Esc>:x<CR>
+nmap <C-q><Tab> :!killall -9 vim<CR>
+imap <C-q><Tab> <Esc>:!killall -9 vim<CR>
+vmap <C-q><Tab> <Esc>:!killall -9 vim<CR>
+nmap <C-k> dd
+imap <C-k> <Esc>ddi
+vmap <C-k> <Esc>ddv
+nmap <C-u> p
+imap <C-u> <Esc>pi
+vmap <C-u> <Esc>pv
+nmap <C-t> :tabe<CR>
+imap <C-t> <Esc>:tabe<CR>i
+vmap <C-t> <Esc>:tabe<CR>v
+nmap <C-\><C-[> :tabp<CR>
+imap <C-\><C-[> <Esc>:tabp<CR>i
+vmap <C-\><C-[> <Esc>:tabp<CR>v
+nmap <C-\><C-]> :tabn<CR>
+imap <C-\><C-]> <Esc>:tabn<CR>i
+vmap <C-\><C-]> <Esc>:tabn<CR>v
+nmap <C-c><C-p><C-p> <C-t>:setf cpp<CR>i#include <lt>bits/stdc++.h><CR><CR>using namespace std;<CR><CR>int main() {<CR>ios::sync_with_stdio(false);<CR><CR>return 0;<C-a><CR><Up><CR><Up>
+imap <C-c><C-p><C-p> <C-t><Esc>:setf cpp<CR>i#include <lt>bits/stdc++.h><CR><CR>using namespace std;<CR><CR>int main() {<CR>ios::sync_with_stdio(false);<CR><CR>return 0;<C-a><CR><Up><CR><Up>
+vmap <C-c><C-p><C-p> <C-t><Esc>:setf cpp<CR>i#include <lt>bits/stdc++.h><CR><CR>using namespace std;<CR><CR>int main() {<CR>ios::sync_with_stdio(false);<CR><CR>return 0;<C-a><CR><Up><CR><Up>
+nmap <C-o><C-u> :tabe main.cpp<CR>
+imap <C-o><C-u> <Esc> :tabe main.cpp<CR>i
+vmap <C-o><C-u> <Esc> :tabe main.cpp<CR>v
+nmap <C-o><C-i> :tabe in<CR>
+imap <C-o><C-i> <Esc>:tabe in<CR>i
+vmap <C-o><C-i> <Esc>:tabe in<CR>v
+nmap <C-o><C-o> :tabe out<CR>
+imap <C-o><C-o> <Esc>:tabe out<CR>i
+vmap <C-o><C-o> <Esc>:tabe out<CR>v
+nmap <C-o><C-p> :tabe diff<CR>
+imap <C-o><C-p> <Esc>:tabe diff<CR>i
+vmap <C-o><C-p> <Esc>:tabe diff<CR>v
+nmap <F9> <C-s>:!clear && clear && g++ -g -O2 -std=gnu++11 -static main.cpp && ./a.out < in<CR>
+imap <F9> <C-s><Esc>:!clear && clear && g++ -g -O2 -std=gnu++11 -static main.cpp && ./a.out < in<CR>
+vmap <F9> <C-s><Esc>:!clear && clear && g++ -g -O2 -std=gnu++11 -static main.cpp && ./a.out < in<CR>
+nmap <F10> <C-s>:!clear && clear && g++ -g -O2 -std=gnu++11 -static main.cpp && ./a.out < in > out && diff diff out<CR>
+imap <F10> <C-s><Esc>:!clear && clear && g++ -g -O2 -std=gnu++11 -static main.cpp && ./a.out < in > out && diff diff out<CR>
+vmap <F10> <C-s><Esc>:!clear && clear && g++ -g -O2 -std=gnu++11 -static main.cpp && ./a.out < in > out && diff diff out<CR>
